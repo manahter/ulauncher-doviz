@@ -1,0 +1,69 @@
+{
+  "required_api_version": "^2.0.0",
+  "name": "Döviz Kurları",
+  "description": "Seçilen döviz kurlarını anlık verir",
+  "developer_name": "Nesivmi - nesidizayn.com",
+  "icon": "images/icon.png",
+  "options": {
+    "query_debounce": 0.5
+  },
+  "preferences": [
+    {
+      "id": "doviz",
+      "type": "keyword",
+      "name": "Döviz",
+      "description": "Döviz Kurları",
+      "default_value": "döviz"
+    },
+    {
+      "id": "dov0",
+      "type": "text",
+      "name": "Doviz0",
+      "description": "Döviz Kuru 0",
+      "default_value": "Gram;https://altin.doviz.com/gram-altin"
+    },
+    {
+      "id": "dov1",
+      "type": "text",
+      "name": "Döviz1",
+      "description": "Döviz Kuru 1",
+      "default_value": "Çeyrek;https://altin.doviz.com/ceyrek-altin"
+    },
+    {
+      "id": "dov2",
+      "type": "text",
+      "name": "Döviz2",
+      "description": "Döviz Kuru 2",
+      "default_value": "EURO;https://kur.doviz.com/serbest-piyasa/euro"
+    },
+    {
+      "id": "dov3",
+      "type": "text",
+      "name": "Döviz3",
+      "description": "Döviz Kuru 3",
+      "default_value": "STERLIN;https://kur.doviz.com/serbest-piyasa/sterlin"
+    },
+    {
+      "id": "dov4",
+      "type": "text",
+      "name": "Döviz4",
+      "description": "Döviz Kuru 4",
+      "default_value": "DOLAR;https://kur.doviz.com/serbest-piyasa/amerikan-dolari"
+    },
+    {
+      "id": "dov5",
+      "type": "text",
+      "name": "Döviz5",
+      "description": "Döviz Kuru 5",
+      "default_value": "RUBLE;https://kur.doviz.com/serbest-piyasa/rus-rublesi"
+    },
+    {
+      "id": "dov6",
+      "type": "text",
+      "name": "Döviz6",
+      "description": "Döviz Kuru 6",
+      "default_value": "BIST100;https://borsa.doviz.com/endeksler/XU100"
+    }
+  ]
+}
+
