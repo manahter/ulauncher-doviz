@@ -91,10 +91,10 @@ class KeywordQueryEventListener(EventListener):
             x = extension.preferences["dov"+str(i)].split(";")
             if len(x) < 2:
                 continue
-            metin = doviz(x[1]) #Adres
+            metin = doviz(x[1].strip()) #Adres
             items.append(
                 ExtensionResultItem(icon='images/icon.png',
-                                    name= x[0] + " " + metin[0] + " " + metin[1],
+                                    name= x[0].strip() + "\t" + metin[0] + "\t" + metin[1],
                                     description= metin[2],
                                     on_enter=HideWindowAction())
             )
