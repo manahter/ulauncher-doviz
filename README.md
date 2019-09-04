@@ -4,6 +4,10 @@
 
 > [Döviz v1.0](https://github.com/nesivmi/ulauncher-doviz)
 
+
+Henüz tam düzenlenmedi. Görsellerde eklecek..
+
+
 ## Ön Sunum
 
 ![Preview](prev.gif)
