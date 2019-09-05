@@ -18,7 +18,7 @@ else:
     import urllib.request
     import urllib.parse
 
-agent = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko"}
+agent = {'User-Agent': "Mozilla/5.0 (Android 9; Mobile; rv:67.0.3) Gecko/67.0.3 Firefox/67.0.3"}
 
 
 class MyHTMLParser(HTMLParser):
