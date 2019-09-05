@@ -39,6 +39,7 @@ Not: Aradaki bölme işareti noktalı virgül (;) olmalı.
 
 ## Uyarı
 * **Bağlantı hızına göre verinin internetten çekilmesi zaman alabilmektedir.**
+* **Veri, doviz.com adresinden çekilmektedir**
 
 ## Links
 
