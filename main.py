@@ -1,13 +1,12 @@
 # Veriler doviz.com adresinden alınmaktadır.
-
-import sys
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.client.EventListener import EventListener
-from ulauncher.api.shared.event import KeywordQueryEvent
+from ulauncher.api.shared.event import KeywordQueryEvent, ItemEnterEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.HideWindowAction import HideWindowAction
-
+from ulauncher.api.shared.action.OpenUrlAction import OpenUrlAction
+import sys
 
 if (sys.version_info[0] < 3):
     import urllib2
@@ -19,8 +18,7 @@ else:
     import urllib.request
     import urllib.parse
 
-agent = {'User-Agent': "Mozilla/5.0 (Android 9; Mobile; rv:67.0.3) Gecko/67.0.3 Firefox/67.0.3"}
-
+agent = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko"}
 
 
 class MyHTMLParser(HTMLParser):
@@ -47,7 +45,6 @@ def doviz(base_link):
         request = urllib.request.Request(base_link, headers=agent)
         raw_data = urllib.request.urlopen(request).read()
     data = raw_data.decode("utf-8")
-    
     MyHTMLParser.taglar.clear()
     MyHTMLParser.taglar.append({"tag_s":[], "attrs":[], "tag_e":[], "data":""})
     parser = MyHTMLParser()
@@ -58,10 +55,10 @@ def doviz(base_link):
     yasonra_alis = False
     yasonra_satis = False
     for i in parser.taglar:
-        if yasonra_alis and len(i["attrs"])>0 and "value" in i["attrs"][0][1]:
+        if yasonra_alis and len(i["attrs"])>0 and i["attrs"][0][1] and "value" in i["attrs"][0][1]:
             alis = "alış: " + i["data"].strip()
             yasonra_alis=False
-        elif yasonra_satis and len(i["attrs"])>0 and "value" in i["attrs"][0][1]:
+        elif yasonra_satis and len(i["attrs"])>0 and i["attrs"][0][1] and "value" in i["attrs"][0][1]:
             satis = "satış: " + i["data"].strip()
             yasonra_satis=False
         if not alis and ( "Alış" in i.get("data","") or "Son" in i.get("data","")):
@@ -83,8 +80,6 @@ class DovizExtension(Extension):
 
 class KeywordQueryEventListener(EventListener):
     def on_event(self, event, extension):
-        query = event.get_argument() or str()
-               
         items = []
         
         for i in range(7):
