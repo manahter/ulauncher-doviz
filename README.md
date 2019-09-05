@@ -38,7 +38,7 @@ Not: Aradaki bölme işareti noktalı virgül (;) olmalı.
 
 
 ## Uyarı
-* **Bağlantı hızına göre verinin internetten alınması zaman alabilmektedir.**
+* **Bağlantı hızına göre verinin internetten çekilmesi zaman alabilmektedir.**
 
 ## Links
 
