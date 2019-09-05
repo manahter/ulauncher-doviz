@@ -5,12 +5,9 @@
 > [Döviz v1.0](https://github.com/nesivmi/ulauncher-doviz)
 
 
-Henüz tam düzenlenmedi. Görsellerde eklecek..
-
-
 ## Ön Sunum
 
-![Preview](prev.gif)
+![Ön Sunum](images/prev.gif)
 
 ## Gereklilikler
 
@@ -37,7 +34,11 @@ GRAM ALTIN;https://altin.doviz.com/gram-altin
 ```
 Not: Aradaki bölme işareti noktalı virgül (;) olmalı.
 
-![Preferences](prefs.gif)
+![Ayarlar](images/pref.gif)
+
+
+## Uyarı
+* **Bağlantı hızına göre verinin internetten alınması zaman alabilmektedir.**
 
 ## Links
 
