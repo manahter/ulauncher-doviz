@@ -1,4 +1,4 @@
-# Ulauncher Döviz v1.0
+# Ulauncher - Döviz v1.0
 
 [![Ulauncher Extension](https://img.shields.io/badge/Ulauncher-Extension-green.svg)](https://github.com/nesivmi/ulauncher-doviz)
 
