@@ -91,7 +91,7 @@ class KeywordQueryEventListener(EventListener):
                 ExtensionResultItem(icon='images/icon.png',
                                     name= x[0].strip() + "\t" + metin[0] + "\t" + metin[1],
                                     description= metin[2],
-                                    on_enter=HideWindowAction())
+                                    on_enter=OpenUrlAction(x[1].strip()))
             )
 
         return RenderResultListAction(items)
