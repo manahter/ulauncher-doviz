@@ -1,4 +1,6 @@
 # Veriler doviz.com adresinden alınmaktadır.
+import re
+from requests import get
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.shared.event import KeywordQueryEvent, ItemEnterEvent
@@ -6,70 +8,30 @@ from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.HideWindowAction import HideWindowAction
 from ulauncher.api.shared.action.OpenUrlAction import OpenUrlAction
-import sys
 
-if (sys.version_info[0] < 3):
-    import urllib2
-    import urllib
-    import HTMLParser
-else:
-    from html.parser import HTMLParser
-    import html.parser
-    import urllib.request
-    import urllib.parse
-
-agent = {'User-Agent': "Mozilla/5.0 (Android 9; Mobile; rv:67.0.3) Gecko/67.0.3 Firefox/67.0.3"}
-
-
-class MyHTMLParser(HTMLParser):
-    taglar = [{"tag_s":[], "attrs":[], "tag_e":[], "data":""}]
-
-    def handle_starttag(self, tag, attrs):
-        self.taglar.append({})
-        self.taglar[-1]["tag_s"] = tag
-        self.taglar[-1]["attrs"] = attrs
-
-    def handle_endtag(self, tag):
-        self.taglar[-1]["tag_e"] = tag
-        
-    def handle_data(self, data):
-        self.taglar[-1]["data"] = self.taglar[-1].get("data","") + data
-
-
+headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko"}
 
 def doviz(base_link):
-    if (sys.version_info[0] < 3):
-        request = urllib2.Request(base_link, headers=agent)
-        raw_data = urllib2.urlopen(request).read()
-    else:
-        request = urllib.request.Request(base_link, headers=agent)
-        raw_data = urllib.request.urlopen(request).read()
-    data = raw_data.decode("utf-8")
-    MyHTMLParser.taglar.clear()
-    MyHTMLParser.taglar.append({"tag_s":[], "attrs":[], "tag_e":[], "data":""})
-    parser = MyHTMLParser()
-    parser.feed(data)
-    alis = ""
-    satis = ""
-    sonzaman = None
-    yasonra_alis = False
-    yasonra_satis = False
-    for i in parser.taglar:
-        if yasonra_alis and len(i["attrs"])>0 and i["attrs"][0][1] and "value" in i["attrs"][0][1]:
-            alis = "alış: " + i["data"].strip()
-            yasonra_alis=False
-        elif yasonra_satis and len(i["attrs"])>0 and i["attrs"][0][1] and "value" in i["attrs"][0][1]:
-            satis = "satış: " + i["data"].strip()
-            yasonra_satis=False
-        if not alis and ( "Alış" in i.get("data","") or "Son" in i.get("data","")):
-            yasonra_alis = True
-        elif not satis and "Satış" in i.get("data",""):
-            yasonra_satis = True
-        if len(i["attrs"]) > 0 and "update" in i["attrs"][0]:
-            sonzaman = i["data"].strip()
-
-    return alis, satis, sonzaman
+    data = get(base_link, headers=headers)
+    veri = data.content.decode("utf-8")
     
+    real = "col.*[\n].*label.*Alış.*[\n].*value"   if "endeksler" not in base_link else "col.*[\n].*label.*Son.*[\n].*value"
+    resa = "col.*[\n]*.*label.*Satı.*[\n].*value"  if "endeksler" not in base_link else "col.*[\n].*label.*Son.*[\n].*value"
+    reup = "col.*[\n]*.*update"
+        
+    x = re.search(real, veri)
+    x = x.span()[1] if x else False
+    alis = ( "Alış: " + veri[veri.find(">",x)+1:veri.find("<",x)] ) if x else ""
+    
+    y = re.search(resa, veri)
+    y = y.span()[1] if y else False
+    sats = ( "Satış: " + veri[veri.find(">",y)+1:veri.find("<",y)] ) if y else ""
+    
+    z = re.search(reup, veri)
+    z = z.span()[1] if z else False
+    updt = veri[veri.find(">",z)+1:veri.find("<",z)] if z else ""
+    
+    return alis, sats, updt
 
 
 class DovizExtension(Extension):
@@ -87,11 +49,10 @@ class KeywordQueryEventListener(EventListener):
             if len(x) < 2:
                 continue
             metin = doviz(x[1].strip()) #Adres
-            items.append(
-                ExtensionResultItem(icon='images/icon.png',
-                                    name= x[0].strip() + "\t" + metin[0] + "\t" + metin[1],
-                                    description= metin[2],
-                                    on_enter=OpenUrlAction(x[1].strip()))
+            items.append(   ExtensionResultItem(icon='images/icon.png',
+                                                name= "{:10}{:20}{}".format(x[0].strip(), metin[0], metin[1]),
+                                                description= metin[2],
+                                                on_enter=OpenUrlAction(x[1] and x[1].strip()))
             )
 
         return RenderResultListAction(items)
