@@ -11,27 +11,26 @@ from ulauncher.api.shared.action.OpenUrlAction import OpenUrlAction
 
 headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; Touch; rv:11.0) like Gecko"}
 
+KEY1 = "Alış / Satış"
+KEY2 = "Günlük Aralık"
+
+
 def doviz(base_link):
     data = get(base_link, headers=headers)
     veri = data.content.decode("utf-8")
-    
-    real = "col.*[\n].*label.*Alış.*[\n].*value"   if "endeksler" not in base_link else "col.*[\n].*label.*Son.*[\n].*value"
-    resa = "col.*[\n]*.*label.*Satı.*[\n].*value"  if "endeksler" not in base_link else "col.*[\n].*label.*Son.*[\n].*value"
-    reup = "col.*[\n]*.*update"
-        
-    x = re.search(real, veri)
-    x = x.span()[1] if x else False
-    alis = ( "Alış: " + veri[veri.find(">",x)+1:veri.find("<",x)] ) if x else ""
-    
-    y = re.search(resa, veri)
-    y = y.span()[1] if y else False
-    sats = ( "Satış: " + veri[veri.find(">",y)+1:veri.find("<",y)] ) if y else ""
-    
-    z = re.search(reup, veri)
-    z = z.span()[1] if z else False
-    updt = veri[veri.find(">",z)+1:veri.find("<",z)] if z else ""
-    
-    return alis, sats, updt
+
+    key = f'{KEY1 if KEY1 in veri else KEY2}.*[\n].*>(.*)<'
+    x = re.search(key, veri)
+    x = x and x.groups() and x.groups()[0].split("/" if "/" in x.groups()[0] else "-")
+
+    alis = f"Alış: {x[0]}" if x else ""
+    sats = f"Satış:{x[1]}" if x else ""
+
+    x = re.search('ay-2">Son (.*)<', veri)
+    x = x and x.groups() and x.groups()[0]
+    updt = x or ""
+
+    return alis, sats, f"Son Güncelleme {updt.strip('()')}"
 
 
 class DovizExtension(Extension):
