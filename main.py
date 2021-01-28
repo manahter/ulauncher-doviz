@@ -1,3 +1,4 @@
+
 # Veriler doviz.com adresinden alınmaktadır.
 import re
 from requests import get
@@ -18,19 +19,18 @@ KEY2 = "Günlük Aralık"
 def doviz(base_link):
     data = get(base_link, headers=headers)
     veri = data.content.decode("utf-8")
+    # veri = veri[veri.find(KEY1 if KEY1 in veri else KEY2, 0):]
 
-    key = f'{KEY1 if KEY1 in veri else KEY2}.*[\n].*>(.*)<'
-    x = re.search(key, veri)
-    x = x and x.groups() and x.groups()[0].split("/" if "/" in x.groups()[0] else "-")
+    a_s = []
+    for key, desc in [(f'data-socket-attr="b">[\n\t\v ]*(.*)[\n\t\v ]*</', "Alış"),
+                      (f'data-socket-attr="s">[\n\t\v ]*(.*)[\n\t\v ]*</', "Satış"),
+                      (f'ay-2">Son (.*)<', "Son Güncelleme")
+                      ]:
+        x = re.search(key, veri)
+        x = x and x.groups() and x.groups()[0]
+        a_s.append(f"{desc}: {x.strip()}" if x else "")
 
-    alis = f"Alış: {x[0]}" if x else ""
-    sats = f"Satış:{x[1]}" if x else ""
-
-    x = re.search('ay-2">Son (.*)<', veri)
-    x = x and x.groups() and x.groups()[0]
-    updt = x or ""
-
-    return alis, sats, f"Son Güncelleme {updt.strip('()')}"
+    return a_s
 
 
 class DovizExtension(Extension):
@@ -47,11 +47,14 @@ class KeywordQueryEventListener(EventListener):
             x = extension.preferences["dov"+str(i)].split(";")
             if len(x) < 2:
                 continue
-            metin = doviz(x[1].strip()) #Adres
-            items.append(   ExtensionResultItem(icon='images/icon.png',
-                                                name= "{:10}{:20}{}".format(x[0].strip(), metin[0], metin[1]),
-                                                description= metin[2],
-                                                on_enter=OpenUrlAction(x[1] and x[1].strip()))
+            # Adres
+            metin = doviz(x[1].strip())
+
+            items.append(ExtensionResultItem(
+                icon='images/icon.png',
+                name="{:10}{:20}{}".format(x[0].strip(), metin[0], metin[1]),
+                description=metin[2],
+                on_enter=OpenUrlAction(x[1] and x[1].strip()))
             )
 
         return RenderResultListAction(items)
